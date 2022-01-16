@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.7 (360video)" project-jdk-type="Python SDK" />
+  <component name="UnattendedHostPersistenceState">
+    <option name="openedFilesInfos">
+      <list>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="25" />
+          <option name="fileUrl" value="file://$USER_HOME$/.conda/envs/360video/lib/python3.7/datetime.py" />
+        </OpenedFileInfo>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="1403" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/common.py" />
+        </OpenedFileInfo>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="3527" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/element.py" />
+        </OpenedFileInfo>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="0" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/allocation.py" />
+        </OpenedFileInfo>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="230" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/prediction.py" />
+        </OpenedFileInfo>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="0" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/probability.py" />
+        </OpenedFileInfo>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="1571" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/process.py" />
+        </OpenedFileInfo>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="3752" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/nntrain.py" />
+        </OpenedFileInfo>
+      </list>
+    </option>
+  </component>
+</project>
