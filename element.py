@@ -137,6 +137,8 @@ class Trajectory:
         yaw = 0
         qw = 0
         length = len(viewpoints)
+        if length == 0:
+            length = 1
         for viewpoint in viewpoints:
             pitch += viewpoint.eulerangle.pitch
             roll += viewpoint.eulerangle.roll

@@ -40,7 +40,7 @@ def train(experimentNo, videoNo, users):
     # 构建输入、输出
     for n in range(len(all_users_trajectory)):
         tr = all_users_trajectory[n]
-        for i in range(len(tr.yaws) - 7):
+        for i in range(len(tr.yaws) - 8):
             input = [tr.yaws[i], tr.pitchs[i], tr.yaws[i + 1], tr.pitchs[i + 1], tr.yaws[i + 2], tr.pitchs[i + 2],
                      tr.yaws[i + 3], tr.pitchs[i + 3]]
             output = [tr.yaws[i + 4], tr.pitchs[i + 4], tr.yaws[i + 5], tr.pitchs[i + 5], tr.yaws[i + 6],
@@ -71,7 +71,7 @@ def train(experimentNo, videoNo, users):
     net = Net(17, 20, 8)
     print(net)
 
-    optimizer = torch.optim.SGD(net.parameters(), lr=0.08)
+    optimizer = torch.optim.SGD(net.parameters(), lr=0.1)
     loss_func = torch.nn.MSELoss()
 
     for t in range(50000):
@@ -116,5 +116,5 @@ if __name__ == '__main__':
     users = []
     for i in range(40):
         users.append(i + 1)
-    for group in [2]:
-        net = train(group, 3, users)
+    for group in [1]:
+        net = train(group, 4, users)
