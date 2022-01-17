@@ -1,3 +1,5 @@
+import math
+
 import numpy as np
 import torch
 import torch.nn as nn
@@ -7,6 +9,8 @@ from process import *
 
 ips = 0
 ops = 0
+
+
 class Net(nn.Module):
     def __init__(self, n_input, n_hidden, n_output):
         super(Net, self).__init__()
@@ -22,6 +26,7 @@ class Net(nn.Module):
         out = self.predict(out)
 
         return out
+
 
 def train(experimentNo, videoNo, users):
     inputs = []
@@ -49,7 +54,7 @@ def train(experimentNo, videoNo, users):
                     compare_tr = [current_tr.yaws[i], current_tr.pitchs[i], current_tr.yaws[i + 1],
                                   current_tr.pitchs[i + 1], current_tr.yaws[i + 2], current_tr.pitchs[i + 2],
                                   current_tr.yaws[i + 3], current_tr.pitchs[i + 3]]
-                    current_rou = getRou(input, compare_tr)
+                    current_rou = get_rou(input, compare_tr)
                     if current_rou >= rou:
                         best_tr_no = m
                         rou = current_rou
@@ -61,11 +66,12 @@ def train(experimentNo, videoNo, users):
 
             inputs.append(input)
             outputs.append(output)
-    x, y = (Variable(torch.unsqueeze(torch.FloatTensor(inputs), dim=1)), Variable(torch.unsqueeze(torch.FloatTensor(outputs), dim=1)))
+    x, y = (Variable(torch.unsqueeze(torch.FloatTensor(inputs), dim=1)),
+            Variable(torch.unsqueeze(torch.FloatTensor(outputs), dim=1)))
     net = Net(17, 20, 8)
     print(net)
 
-    optimizer = torch.optim.SGD(net.parameters(), lr=0.1)
+    optimizer = torch.optim.SGD(net.parameters(), lr=0.08)
     loss_func = torch.nn.MSELoss()
 
     for t in range(50000):
@@ -75,38 +81,40 @@ def train(experimentNo, videoNo, users):
         loss.backward()
         optimizer.step()
 
-        if t % 5 == 0:
-            print('Loss = %.4f' % loss.data)
-    torch.save(net,'./nnar_model/NNAR_'+str(experimentNo)+'_'+str(videoNo)+'.pth')
+        if t % 500 == 0:
+            print(str(t) + '_Loss = %.4f' % loss.data)
+    torch.save(net, './nnar_model/NNAR_' + str(experimentNo) + '_' + str(videoNo) + '_' + str(
+        int(loss.data * 10000)) + '.pth')
     return net
 
-def getRou(tr, compare):
-    tr_yaws = []
-    tr_pitchs = []
-    compare_yaws = []
-    compare_pitchs = []
-    for i in range(len(tr)):
-        if i%2 == 0:
-            tr_yaws.append(tr[i])
-            compare_yaws.append(compare[i])
+
+def get_rou(a, b):
+    a_yaws = []
+    a_pitchs = []
+    b_yaws = []
+    b_pitchs = []
+    for i in range(len(a)):
+        if i % 2 == 0:
+            a_yaws.append(a[i])
+            b_yaws.append(b[i])
         else:
-            tr_pitchs.append(tr[i])
-            compare_pitchs.append(compare[i])
-    tr_yaws = np.array(tr_yaws)
-    compare_yaws = np.array(compare_yaws)
-    tr_pitchs = np.array(tr_pitchs)
-    compare_pitchs = np.array(compare_pitchs)
-    rou_yaw = math.pow(np.inner(tr_yaws,compare_yaws),2)/(np.inner(tr_yaws,tr_yaws) * np.inner(compare_yaws,compare_yaws))
-    rou_pitch = math.pow(np.inner(tr_pitchs, compare_pitchs),2)/(np.inner(tr_pitchs, tr_pitchs) * np.inner(compare_pitchs, compare_pitchs))
-    rou = math.sqrt((rou_yaw + rou_pitch)/2)
+            a_pitchs.append(a[i])
+            b_pitchs.append(b[i])
+    tmp = 0
+    for i in range(len(a_yaws)):
+        tmp += get_cos(a_yaws[i], a_pitchs[i], b_yaws[i], b_pitchs[i])
+    rou = tmp / len(a_yaws)
     return rou
+
+
+def get_cos(a_yaw, a_pitch, b_yaw, b_pitch):
+    res = math.cos(a_yaw - b_yaw) * math.cos(a_pitch) * math.cos(b_pitch) + math.sin(a_pitch) * math.sin(b_pitch)
+    return res
+
 
 if __name__ == '__main__':
     users = []
-    for i in range(42):
+    for i in range(40):
         users.append(i + 1)
-    for group in [1]:
-        net = train(group,4,users)
-
-
-
+    for group in [2]:
+        net = train(group, 3, users)
