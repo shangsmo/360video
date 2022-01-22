@@ -64,9 +64,6 @@ def train_nn_net():
 
 if __name__ == '__main__':
     init()
-    users = []
-    for i in range(40):
-        users.append(i+1)
     train_nn_net()
 
     #net = Net(17, 20, 8)
