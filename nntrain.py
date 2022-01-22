@@ -7,8 +7,6 @@ import torch.nn.functional as F
 from torch.autograd import Variable
 from process import *
 
-ips = 0
-ops = 0
 
 
 class Net(nn.Module):
@@ -24,19 +22,13 @@ class Net(nn.Module):
         out = self.hidden2(out)
         out = torch.sigmoid(out)
         out = self.predict(out)
-
         return out
 
 
 def train(experimentNo, videoNo, users):
     inputs = []
     outputs = []
-    all_users_trajectory = []
-    # 初始化所有训练轨迹
-    for user in users:
-        org = reader(experimentNo, videoNo, user)
-        trajectory = Trajectory(0.5, org)
-        all_users_trajectory.append(trajectory)
+    all_users_trajectory = read_users(experimentNo, videoNo, users)
     # 构建输入、输出
     for n in range(len(all_users_trajectory)):
         tr = all_users_trajectory[n]

@@ -50,6 +50,16 @@ def reader(experimentNo, videoNo, usrNo):
     return viewpointList
 
 
+def read_users(experimentNo, videoNo, users):
+    all_users_trajectory = []
+    # 初始化所有训练轨迹
+    for user in users:
+        org = reader(experimentNo, videoNo, user)
+        trajectory = Trajectory(0.5, org)
+        all_users_trajectory.append(trajectory)
+    return all_users_trajectory
+
+
 if __name__ == '__main__':
     init()
     l = Trajectory(0.05, reader(2, 3, 46))
