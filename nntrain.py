@@ -1,11 +1,10 @@
 import math
 
-import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.autograd import Variable
-from process import *
+
 
 
 
@@ -25,36 +24,16 @@ class Net(nn.Module):
         return out
 
 
-def train(experimentNo, videoNo, users):
+def train(experimentNo, videoNo, all_users_trajectory):
     inputs = []
     outputs = []
-    all_users_trajectory = read_users(experimentNo, videoNo, users)
     # 构建输入、输出
     for n in range(len(all_users_trajectory)):
         tr = all_users_trajectory[n]
         for i in range(len(tr.yaws) - 8):
-            input = [tr.yaws[i], tr.pitchs[i], tr.yaws[i + 1], tr.pitchs[i + 1], tr.yaws[i + 2], tr.pitchs[i + 2],
-                     tr.yaws[i + 3], tr.pitchs[i + 3]]
+            input = get_input(i, all_users_trajectory, tr, n)
             output = [tr.yaws[i + 4], tr.pitchs[i + 4], tr.yaws[i + 5], tr.pitchs[i + 5], tr.yaws[i + 6],
                       tr.pitchs[i + 6], tr.yaws[i + 7], tr.pitchs[i + 7]]
-            # 寻找最相关轨迹
-            best_tr_no = -1  # 相关的轨迹编号
-            rou = -1  # 相关系数
-            for m in range(len(all_users_trajectory)):
-                if m != n:
-                    current_tr = all_users_trajectory[m]
-                    compare_tr = [current_tr.yaws[i], current_tr.pitchs[i], current_tr.yaws[i + 1],
-                                  current_tr.pitchs[i + 1], current_tr.yaws[i + 2], current_tr.pitchs[i + 2],
-                                  current_tr.yaws[i + 3], current_tr.pitchs[i + 3]]
-                    current_rou = get_rou(input, compare_tr)
-                    if current_rou >= rou:
-                        best_tr_no = m
-                        rou = current_rou
-            print(best_tr_no)
-            print(rou)
-            good_tr = all_users_trajectory[best_tr_no]
-            input.extend([rou, good_tr.yaws[i + 4], good_tr.pitchs[i + 4], good_tr.yaws[i + 5], good_tr.pitchs[i + 5],
-                          good_tr.yaws[i + 6], good_tr.pitchs[i + 6], good_tr.yaws[i + 7], good_tr.pitchs[i + 7]])
 
             inputs.append(input)
             outputs.append(output)
@@ -75,7 +54,7 @@ def train(experimentNo, videoNo, users):
 
         if t % 500 == 0:
             print(str(t) + '_Loss = %.4f' % loss.data)
-    torch.save(net, './nnar_model/NNAR_' + str(experimentNo) + '_' + str(videoNo) + '_' + str(
+    torch.save(net.state_dict(), './nnar_model/NNAR_' + str(experimentNo) + '_' + str(videoNo) + '_' + str(
         int(loss.data * 10000)) + '.pth')
     return net
 
@@ -104,9 +83,22 @@ def get_cos(a_yaw, a_pitch, b_yaw, b_pitch):
     return res
 
 
-if __name__ == '__main__':
-    users = []
-    for i in range(40):
-        users.append(i + 1)
-    for group in [1]:
-        net = train(group, 4, users)
+def get_input(beg, all_users_trajectory, tr, idx=1000):
+    best_tr_no = -1  # 相关的轨迹编号
+    rou = -1  # 相关系数
+    input = [tr.yaws[beg], tr.pitchs[beg], tr.yaws[beg + 1], tr.pitchs[beg + 1], tr.yaws[beg + 2], tr.pitchs[beg + 2],
+             tr.yaws[beg + 3], tr.pitchs[beg + 3]]
+    for m in range(len(all_users_trajectory)):
+        if m != idx:
+            current_tr = all_users_trajectory[m]
+            compare_tr = [current_tr.yaws[beg], current_tr.pitchs[beg], current_tr.yaws[beg + 1],
+                          current_tr.pitchs[beg + 1], current_tr.yaws[beg + 2], current_tr.pitchs[beg + 2],
+                          current_tr.yaws[beg + 3], current_tr.pitchs[beg + 3]]
+            current_rou = get_rou(input, compare_tr)
+            if current_rou >= rou:
+                best_tr_no = m
+                rou = current_rou
+    good_tr = all_users_trajectory[best_tr_no]
+    input.extend([rou, good_tr.yaws[beg + 4], good_tr.pitchs[beg + 4], good_tr.yaws[beg + 5], good_tr.pitchs[beg + 5],
+                  good_tr.yaws[beg + 6], good_tr.pitchs[beg + 6], good_tr.yaws[beg + 7], good_tr.pitchs[beg + 7]])
+    return input

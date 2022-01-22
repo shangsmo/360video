@@ -1,10 +1,5 @@
 import csv
 
-from pandas import DataFrame
-from statsmodels.tsa.seasonal import STL
-import statsmodels.api as sm
-import matplotlib.pyplot as plt
-import pandas as pd
 import numpy as np
 
 from prediction import *
@@ -59,9 +54,16 @@ def read_users(experimentNo, videoNo, users):
         all_users_trajectory.append(trajectory)
     return all_users_trajectory
 
-
+from nntrain import Net
 if __name__ == '__main__':
     init()
-    l = Trajectory(0.05, reader(2, 3, 46))
-    ar_model(l.times[300:500],l.yaws[300:500],l.times[500:520])
-    print(l.yaws[500:510])
+    net = Net(17, 20, 8)
+    net.load_state_dict(torch.load('./nnar_model/NNAR_2_4_417.pth'))
+    l = Trajectory(0.5, reader(2, 4, 46))
+    users = []
+    for i in range(40):
+        users.append(i+1)
+    t = 250
+    nnar_model([t],l,net,read_users(2,4,users))
+    print(l.yaws[t:t+4])
+    print(l.pitchs[t:t+4])
