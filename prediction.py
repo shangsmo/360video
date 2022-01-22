@@ -1,5 +1,3 @@
-import math
-
 from scipy import stats
 from statsmodels.tsa.ar_model import AutoReg
 import numpy as np
@@ -28,9 +26,8 @@ def avg_model(x_parameter, y_parameter, predict_value):
 def ar_model(x_parameter, y_parameter, predict_value):
     predictions = []
     for i in range(len(y_parameter)):
-        train = y_parameter[0]
-        model_fit = AutoReg(train, 5).fit()
-        predictions.append(model_fit.predict(len(train), len(train) + len(predict_value) - 1))
+        model_fit = AutoReg(y_parameter[i], 5).fit()
+        predictions.append(model_fit.predict(len(y_parameter[i]), len(y_parameter[i]) + len(predict_value) - 1))
     predictions = standardize(predictions)
     return predictions
 

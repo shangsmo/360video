@@ -6,8 +6,6 @@ import torch.nn.functional as F
 from torch.autograd import Variable
 
 
-
-
 class Net(nn.Module):
     def __init__(self, n_input, n_hidden, n_output):
         super(Net, self).__init__()
