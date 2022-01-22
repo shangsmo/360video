@@ -4,7 +4,6 @@ import numpy as np
 
 from prediction import *
 
-x=np.arange(0,100,1)
 from element import *
 
 dataSetPath = "./vr-dataset/Formated_Data/"
@@ -54,16 +53,26 @@ def read_users(experimentNo, videoNo, users):
         all_users_trajectory.append(trajectory)
     return all_users_trajectory
 
-from nntrain import Net
+
+def train_nn_net():
+    users = []
+    for i in range(40):
+        users.append(i + 1)
+    all_users_trajectory = read_users(2, 2, users)
+    train(2, 2, all_users_trajectory)
+
+
 if __name__ == '__main__':
     init()
-    net = Net(17, 20, 8)
-    net.load_state_dict(torch.load('./nnar_model/NNAR_2_4_417.pth'))
-    l = Trajectory(0.5, reader(2, 4, 46))
     users = []
     for i in range(40):
         users.append(i+1)
-    t = 250
-    nnar_model([t],l,net,read_users(2,4,users))
-    print(l.yaws[t:t+4])
-    print(l.pitchs[t:t+4])
+    train_nn_net()
+
+    #net = Net(17, 20, 8)
+    #net.load_state_dict(torch.load('./nnar_model/NNAR_2_4_417.pth'))
+    #l = Trajectory(0.5, reader(2, 4, 46))
+    #t = 250
+    #nnar_model([t],l,net,read_users(2,4,users))
+    #print(l.yaws[t:t+4])
+    #print(l.pitchs[t:t+4])
