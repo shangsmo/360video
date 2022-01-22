@@ -58,8 +58,8 @@ def train_nn_net():
     users = []
     for i in range(40):
         users.append(i + 1)
-    all_users_trajectory = read_users(2, 2, users)
-    train(2, 2, all_users_trajectory)
+    all_users_trajectory = read_users(2, 1, users)
+    train(2, 1, all_users_trajectory)
 
 
 if __name__ == '__main__':
