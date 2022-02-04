@@ -56,37 +56,15 @@ def train_nn_net():
     users = []
     for i in range(40):
         users.append(i + 1)
-    all_trajectory = read_users(2, 8, users)
-    train(2, 8, all_trajectory)
+    all_trajectory = read_users(1, 5, users)
+    train(1, 5, all_trajectory)
 
 
-if __name__ == '__main__':
-    init()
-    users = []
-    for i in range(40):
-        users.append(i + 1)
-    net = Net(17, 20, 8)
-    net.load_state_dict(torch.load('./nnar_model/NNAR_2_3_706.pth'))
-    l = Trajectory(0.5, reader(2, 3, 42))
-    all_users_trajectory = read_users(2, 3, users)
-    accs_yaw = []
-    accs_pitch = []
-    for t in range(16,len(l.yaws) - 8):
-        #prediction = nnar_model([t], l, net, all_users_trajectory)
-        prediction = linear_model([t, t + 1, t + 2, t + 3], [l.yaws[t:t + 4], l.pitchs[t:t + 4]], [t + 4, t + 5, t + 6, t + 7])
-        #prediction = avg_model([t, t + 1, t + 2, t + 3], [l.yaws[t:t + 4], l.pitchs[t:t + 4]], [t + 4, t + 5, t + 6, t + 7])
-        #prediction = ar_model([t], [l.yaws[t-16:t + 4], l.pitchs[t-16:t + 4]], [t + 4, t + 5, t + 6, t + 7])
 
+'''
         accura_yaw = abs(l.yaws[t + 4] - prediction[0][0]) / (2 * math.pi)
         if accura_yaw > 0.5:
             accura_yaw = 1 - accura_yaw
         accura_pitch = abs(l.pitchs[t + 4] - prediction[1][0]) / math.pi
+'''
 
-        accs_yaw.append(accura_yaw)
-        accs_pitch.append(accura_pitch)
-    print(np.mean(accs_yaw))
-    print(np.mean(accs_pitch))
-    import matplotlib.pyplot as plt
-
-    plt.plot(accs_yaw)
-    plt.show()

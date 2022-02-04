@@ -40,7 +40,7 @@ def train(experimentNo, videoNo, all_users_trajectory):
     net = Net(17, 20, 8)
     print(net)
 
-    optimizer = torch.optim.SGD(net.parameters(), lr=0.1)
+    optimizer = torch.optim.SGD(net.parameters(), lr=0.5)
     loss_func = torch.nn.MSELoss()
 
     for t in range(50000):
