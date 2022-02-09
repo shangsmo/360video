@@ -42,7 +42,7 @@ def MLE(all_trajectory, yaw, pitch, pre_yaw, pre_pitch, pre_observe, encoder, ti
     tiles_multi = multi_user(all_trajectory, encoder, timeId)
     star_alpha = 0
     star_res = 0
-    for alpha in np.arange(0,1,0.01):
+    for alpha in np.arange(0, 1, 0.01):
         tmp = alpha * np.array(before_kalman.probabilitys) + (1 - alpha) * np.array(before_multi.probabilitys)
         res = 1
         for i in range(len(pre_observe.times)):
