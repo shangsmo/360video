@@ -46,7 +46,7 @@ def MLE(all_trajectory, yaw, pitch, pre_yaw, pre_pitch, pre_observe, encoder, ti
         tmp = alpha * np.array(before_kalman.probabilitys) + (1 - alpha) * np.array(before_multi.probabilitys)
         res = 1
         for i in range(len(pre_observe.times)):
-            row, col = angle_to_tile(pre_observe.yaws[i], pre_observe.pitchs[i], encoder)
+            row, col = angle_to_tile(pre_observe[i].yaw, pre_observe[i].pitch, encoder)
             res = res * tmp[row][col]
         if star_res < res:
             star_res = res
