@@ -55,10 +55,11 @@ class Tile:
     b2qMap = {}
     optBitrate = 0
 
-    def __init__(self, timeId, positionId, b2qMap):
+    def __init__(self, timeId, positionId, b2qMap={}):
         self.timeId = timeId
         self.positionId = positionId
         self.b2qMap = b2qMap
+        self.probability = probability
 
 
 class Encoder:
@@ -89,6 +90,22 @@ class Viewpoint:
             self.eulerangle = object.toEulerangle()
 
 
+class Chunk:
+    tiles = []
+    probabilitys = []
+
+    def __init__(self, encoder, timeId=0):
+        for i in range(encoder.hightNum):
+            tile_row = []
+            probability_row = []
+            for j in range(encoder.lengthNum):
+                positionId = i + j * encoder.lengthNum
+                tile_row.append(Tile(timeId, positionId))
+                probability_row.append(0)
+            self.tiles.append(tile_row)
+            self.probabilitys.append(probability_row)
+
+
 class Trajectory:
     rolls = []
     pitchs = []
@@ -98,6 +115,7 @@ class Trajectory:
     qzs = []
     qws = []
     times = []
+    splits = []
     interval = 0
 
     def __init__(self, interval, viewpoints):
@@ -110,11 +128,13 @@ class Trajectory:
         self.qzs = []
         self.qws = []
         self.times = []
+        self.splits = []
         end = interval
         split = []
         for i in range(len(viewpoints)):
             viewpoint = viewpoints[i]
             if viewpoint.time > end:
+                self.splits.append(split)
                 meanViewpoint = self.mean(end, split)
                 self.qxs.append(meanViewpoint.quaternion.qx)
                 self.qys.append(meanViewpoint.quaternion.qy)
@@ -127,6 +147,7 @@ class Trajectory:
                 split.clear()
                 end += interval
             split.append(viewpoint)
+        self.splits.append(split)
         self.mean(end, split)
         split.clear()
 
@@ -135,7 +156,6 @@ class Trajectory:
         pitch = 0
         roll = 0
         yaw = 0
-        qw = 0
         length = len(viewpoints)
         if length == 0:
             length = 1
