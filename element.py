@@ -59,7 +59,6 @@ class Tile:
         self.timeId = timeId
         self.positionId = positionId
         self.b2qMap = b2qMap
-        self.probability = probability
 
 
 class Encoder:
@@ -95,6 +94,8 @@ class Chunk:
     probabilitys = []
 
     def __init__(self, encoder, timeId=0):
+        self.probabilitys = []
+        self.tiles = []
         for i in range(encoder.hightNum):
             tile_row = []
             probability_row = []
