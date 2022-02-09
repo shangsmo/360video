@@ -56,6 +56,7 @@ def plot_pdf(error, lable=''):
     plt.savefig('./figure/pdf_pitch.png')
     plt.show()
 
+
 def plot_bar(data):
     times = ('0.5s', '1.0s', '1.5s', '2.0s')
     bar_width = 0.1  # 条形宽度

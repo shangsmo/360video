@@ -7,10 +7,10 @@ def kalman(yaw, pitch, pre_yaw, pre_pitch, pre_observe, encoder, timeId):
     R_yaws = []
     R_pitchs = []
     R_yaws_pitchs = []
-    for i in range(len(pre_observe.times)):
-        R_yaws.append((pre_observe.yaws[i] - pre_yaw) * (pre_observe.yaws[i] - pre_yaw))
-        R_pitchs.append((pre_observe.pitchs[i] - pre_pitch) * (pre_observe.pitchs[i] - pre_pitch))
-        R_yaws_pitchs.append((pre_observe.pitchs[i] - pre_pitch) * (pre_observe.yaws[i] - pre_yaw))
+    for i in range(len(pre_observe)):
+        R_yaws.append((pre_observe[i].yaw - pre_yaw) * (pre_observe[i].yaw - pre_yaw))
+        R_pitchs.append((pre_observe[i].pitch - pre_pitch) * (pre_observe[i].pitch - pre_pitch))
+        R_yaws_pitchs.append((pre_observe[i].pitch - pre_pitch) * (pre_observe[i].yaw - pre_yaw))
     r_yaw = np.mean(R_yaws)
     r_pitch = np.mean(R_pitchs)
     r_yaw_pitch = np.mean(R_yaws_pitchs)
@@ -28,8 +28,8 @@ def multi_user(all_trajectory, encoder, timeId):
     tiles = Chunk(encoder, timeId)
     num = 0
     for usr in all_trajectory:
-        for i in range(len(usr)):
-            row, col = angle_to_tile(usr[i][0], usr[i][1], encoder)
+        for viewpoint in usr.splits[timeId]:
+            row, col = angle_to_tile(viewpoint.yaw, viewpoint.pitch, encoder)
             tiles.probabilitys[row][col] += 1
             num += 1
     tiles.probabilitys = (np.array(tiles.probabilitys)/num).tolist()

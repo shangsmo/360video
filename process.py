@@ -68,3 +68,13 @@ def train_nn_net():
         accura_pitch = abs(l.pitchs[t + 4] - prediction[1][0]) / math.pi
 '''
 
+if __name__ == '__main__':
+    init()
+    users = []
+    for i in range(40):
+        users.append(i + 1)
+    #net = Net(17, 20, 8)
+    #net.load_state_dict(torch.load('./nnar_model/NNAR_2_3_706.pth'))
+    l = Trajectory(0.5, reader(2, 3, 46))
+    print(len(l.splits[0]))
+    print(l.times[0])

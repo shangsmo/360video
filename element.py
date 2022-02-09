@@ -144,7 +144,7 @@ class Trajectory:
                 self.pitchs.append(meanViewpoint.eulerangle.pitch)
                 self.yaws.append(meanViewpoint.eulerangle.yaw)
                 self.times.append(meanViewpoint.time)
-                split.clear()
+                split = []
                 end += interval
             split.append(viewpoint)
         self.splits.append(split)
