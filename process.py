@@ -49,6 +49,7 @@ def read_users(experimentNo, videoNo, users):
         org = reader(experimentNo, videoNo, user)
         trajectory = Trajectory(0.5, org)
         all_trajectory.append(trajectory)
+    print(len(all_trajectory))
     return all_trajectory
 
 
